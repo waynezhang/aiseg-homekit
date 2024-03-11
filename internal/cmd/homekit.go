@@ -9,8 +9,8 @@ import (
 	"github.com/brutella/hap"
 	"github.com/brutella/hap/accessory"
 	"github.com/spf13/cobra"
-	"github.com/waynezhang/aiseg-hb/internal/aisegmanager"
-	"github.com/waynezhang/aiseg-hb/internal/log"
+	"github.com/waynezhang/aiseg-homekit/internal/aisegmanager"
+	"github.com/waynezhang/aiseg-homekit/internal/log"
 )
 
 const (

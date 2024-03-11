@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/waynezhang/aiseg-hb/internal/log"
+	"github.com/waynezhang/aiseg-homekit/internal/log"
 )
 
 func (am *AiSEGManager) parseFloorHeating(panel panel) []Device {

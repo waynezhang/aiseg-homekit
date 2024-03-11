@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/waynezhang/aiseg-hb/internal/cmd"
+	"github.com/waynezhang/aiseg-homekit/internal/cmd"
 )
 
 func main() {

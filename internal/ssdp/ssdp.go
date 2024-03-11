@@ -3,7 +3,7 @@ package ssdp
 import (
 	"time"
 
-	"github.com/waynezhang/aiseg-hb/internal/log"
+	"github.com/waynezhang/aiseg-homekit/internal/log"
 
 	"github.com/huin/goupnp"
 )

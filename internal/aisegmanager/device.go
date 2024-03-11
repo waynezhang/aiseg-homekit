@@ -3,7 +3,7 @@ package aisegmanager
 import (
 	"fmt"
 
-	"github.com/waynezhang/aiseg-hb/internal/log"
+	"github.com/waynezhang/aiseg-homekit/internal/log"
 )
 
 type Device struct {

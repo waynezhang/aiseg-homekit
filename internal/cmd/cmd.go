@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/waynezhang/aiseg-hb/internal/aisegmanager"
-	"github.com/waynezhang/aiseg-hb/internal/log"
+	"github.com/waynezhang/aiseg-homekit/internal/aisegmanager"
+	"github.com/waynezhang/aiseg-homekit/internal/log"
 )
 
 func Execute() {
@@ -29,7 +29,10 @@ func Execute() {
 	rootCmd.AddCommand(TurnOffCmd)
 	rootCmd.AddCommand(TurnAllOnCmd)
 	rootCmd.AddCommand(TurnAllOffCmd)
+
 	rootCmd.AddCommand(HKServeCmd)
+
+	rootCmd.AddCommand(VersionCmd)
 
 	_ = rootCmd.Execute()
 }

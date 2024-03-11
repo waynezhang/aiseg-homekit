@@ -1,4 +1,4 @@
-module github.com/waynezhang/aiseg-hb
+module github.com/waynezhang/aiseg-homekit
 
 go 1.22.1
 

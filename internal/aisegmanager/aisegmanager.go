@@ -4,11 +4,11 @@ import (
 	"os"
 	"sync"
 
-	"github.com/waynezhang/aiseg-hb/internal/ssdp"
+	"github.com/waynezhang/aiseg-homekit/internal/ssdp"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/waynezhang/aiseg-hb/internal/httpclient"
-	"github.com/waynezhang/aiseg-hb/internal/log"
+	"github.com/waynezhang/aiseg-homekit/internal/httpclient"
+	"github.com/waynezhang/aiseg-homekit/internal/log"
 )
 
 type AiSEGManager struct {
