@@ -2,6 +2,7 @@ package aisegmanager
 
 import (
 	"os"
+	"sync"
 
 	"github.com/waynezhang/aiseg-hb/internal/ssdp"
 
@@ -13,8 +14,10 @@ import (
 type AiSEGManager struct {
 	Name    string
 	Model   string
-	client  *httpclient.HttpClient
 	Devices []Device
+
+	client *httpclient.HttpClient
+	mutext sync.Mutex
 }
 
 type panel struct {
@@ -36,17 +39,25 @@ func DiscoverNewAiSEGManager() *AiSEGManager {
 	if password == "" {
 		log.F("AISEG_PASSWORD is not set")
 	}
-	mgr := newManager(device.Hostname, user, password)
-	mgr.Name = device.Name
-	mgr.Model = device.Model
-	mgr.Devices = mgr.findDevices(DeviceTypeFloorHeating | DeviceTypeLight)
+	mgr := newManager(device.Hostname, device.Name, device.Model, user, password)
+	mgr.Refresh()
 	return mgr
 }
 
-func newManager(hostname string, username string, password string) *AiSEGManager {
+func (mgr *AiSEGManager) Refresh() {
+	mgr.mutext.Lock()
+	defer mgr.mutext.Unlock()
+
+	mgr.Devices = mgr.findDevices(DeviceTypeFloorHeating | DeviceTypeLight)
+}
+
+func newManager(hostname string, name string, model string, username string, password string) *AiSEGManager {
 	return &AiSEGManager{
-		client:  httpclient.Client(hostname, username, password),
+		Name:    name,
+		Model:   model,
 		Devices: []Device{},
+		client:  httpclient.Client(hostname, username, password),
+		mutext:  sync.Mutex{},
 	}
 }
 

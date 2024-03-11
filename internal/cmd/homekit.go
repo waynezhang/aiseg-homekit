@@ -4,12 +4,17 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/brutella/hap"
 	"github.com/brutella/hap/accessory"
 	"github.com/spf13/cobra"
 	"github.com/waynezhang/aiseg-hb/internal/aisegmanager"
 	"github.com/waynezhang/aiseg-hb/internal/log"
+)
+
+const (
+	refreshInterval = 15 * time.Minute // 15 mins
 )
 
 var HKServeCmd = func() *cobra.Command {
@@ -27,7 +32,7 @@ var HKServeCmd = func() *cobra.Command {
 }()
 
 func serve() {
-	bridge, accessories := discoverAccessories()
+	mgr, bridge, accessories := discoverAccessories()
 	if len(accessories) == 0 {
 		log.E("No accessories found")
 		os.Exit(1)
@@ -47,13 +52,15 @@ func serve() {
 	}
 	server.Pin = pin
 
+	startRefresh(mgr)
+
 	fmt.Printf("Starting server with PIN code %s...\n", server.Pin)
 	if err = server.ListenAndServe(context.Background()); err != nil {
 		log.F("Failed to start server due to %s", err.Error())
 	}
 }
 
-func discoverAccessories() (*accessory.Bridge, []*accessory.A) {
+func discoverAccessories() (*aisegmanager.AiSEGManager, *accessory.Bridge, []*accessory.A) {
 	log.D("Discovering devices")
 
 	accessories := []*accessory.A{}
@@ -83,6 +90,10 @@ func discoverAccessories() (*accessory.Bridge, []*accessory.A) {
 		}
 	}
 
+	for _, a := range accessories {
+		log.D("Created accessory %12d %s", a.Id, a.Name())
+	}
+
 	bridge := accessory.NewBridge(accessory.Info{
 		Name:         mgr.Name,
 		Model:        mgr.Model,
@@ -90,5 +101,13 @@ func discoverAccessories() (*accessory.Bridge, []*accessory.A) {
 	})
 	bridge.Id = 1
 
-	return bridge, accessories
+	return mgr, bridge, accessories
+}
+
+func startRefresh(mgr *aisegmanager.AiSEGManager) {
+	go func() {
+		time.Sleep(refreshInterval)
+		log.D("Refreshing tokens")
+		mgr.Refresh()
+	}()
 }

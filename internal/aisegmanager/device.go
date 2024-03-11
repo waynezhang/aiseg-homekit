@@ -25,6 +25,9 @@ const (
 )
 
 func (am *AiSEGManager) ToggleDevice(nodeId string) error {
+	am.mutext.Lock()
+	defer am.mutext.Unlock()
+
 	d := am.findDevice(nodeId)
 	if d == nil {
 		return fmt.Errorf("Device %s not found", nodeId)
@@ -34,6 +37,9 @@ func (am *AiSEGManager) ToggleDevice(nodeId string) error {
 }
 
 func (am *AiSEGManager) TurnDevice(nodeId string, on bool) error {
+	am.mutext.Lock()
+	defer am.mutext.Unlock()
+
 	d := am.findDevice(nodeId)
 	if d == nil {
 		return fmt.Errorf("Device %s not found", nodeId)
@@ -43,6 +49,9 @@ func (am *AiSEGManager) TurnDevice(nodeId string, on bool) error {
 }
 
 func (am *AiSEGManager) TurnAllDevices(deviceType DeviceType, on bool) error {
+	am.mutext.Lock()
+	defer am.mutext.Unlock()
+
 	for _, d := range am.Devices {
 		if d.Type == deviceType {
 			if err := am.turnDevice(&d, on); err != nil {
