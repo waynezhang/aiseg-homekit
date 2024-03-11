@@ -29,6 +29,7 @@ func Execute() {
 	rootCmd.AddCommand(TurnOffCmd)
 	rootCmd.AddCommand(TurnAllOnCmd)
 	rootCmd.AddCommand(TurnAllOffCmd)
+	rootCmd.AddCommand(HKServeCmd)
 
 	_ = rootCmd.Execute()
 }
@@ -54,8 +55,7 @@ var ToggleCmd = func() *cobra.Command {
 		log.D("Toggle device %s", nodeId)
 
 		mgr := aisegmanager.DiscoverNewAiSEGManager()
-		err := mgr.ToggleDevice(nodeId)
-		if err != nil {
+		if err := mgr.ToggleDevice(nodeId); err != nil {
 			log.E("Failed to toggle device due to %s", err.Error())
 		}
 	}
@@ -76,8 +76,7 @@ var TurnOnCmd = func() *cobra.Command {
 		log.D("Turn device %s on", nodeId)
 
 		mgr := aisegmanager.DiscoverNewAiSEGManager()
-		err := mgr.TurnDevice(nodeId, true)
-		if err != nil {
+		if err := mgr.TurnDevice(nodeId, true); err != nil {
 			log.E("Failed to turn device on due to %s", err.Error())
 		}
 	}
@@ -98,8 +97,7 @@ var TurnOffCmd = func() *cobra.Command {
 		log.D("Turn device %s off", nodeId)
 
 		mgr := aisegmanager.DiscoverNewAiSEGManager()
-		err := mgr.TurnDevice(nodeId, false)
-		if err != nil {
+		if err := mgr.TurnDevice(nodeId, false); err != nil {
 			log.E("Failed to turn device off due to %s", err.Error())
 		}
 	}
@@ -130,8 +128,7 @@ var TurnAllOnCmd = func() *cobra.Command {
 		}
 
 		mgr := aisegmanager.DiscoverNewAiSEGManager()
-		err := mgr.TurnAllDevices(deviceType, true)
-		if err != nil {
+		if err := mgr.TurnAllDevices(deviceType, true); err != nil {
 			log.E("Failed to turn device on due to %s", err.Error())
 		}
 	}
@@ -162,8 +159,7 @@ var TurnAllOffCmd = func() *cobra.Command {
 		}
 
 		mgr := aisegmanager.DiscoverNewAiSEGManager()
-		err := mgr.TurnAllDevices(deviceType, false)
-		if err != nil {
+		if err := mgr.TurnAllDevices(deviceType, false); err != nil {
 			log.E("Failed to turn device off due to %s", err.Error())
 		}
 	}

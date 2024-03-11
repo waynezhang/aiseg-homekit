@@ -1,7 +1,6 @@
 package ssdp
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/waynezhang/aiseg-hb/internal/log"
@@ -11,6 +10,7 @@ import (
 
 type SSDPDevice struct {
 	Name     string
+	Model    string
 	Hostname string
 }
 
@@ -28,7 +28,8 @@ func Discover() *SSDPDevice {
 		if len(devices) > 0 {
 			root := devices[0].Root
 			return &SSDPDevice{
-				fmt.Sprintf("%s %s", root.Device.ModelName, root.Device.ModelNumber),
+				root.Device.ModelName,
+				root.Device.ModelNumber,
 				root.URLBase.Hostname(),
 			}
 		}

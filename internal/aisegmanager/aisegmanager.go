@@ -11,6 +11,8 @@ import (
 )
 
 type AiSEGManager struct {
+	Name    string
+	Model   string
 	client  *httpclient.HttpClient
 	Devices []Device
 }
@@ -24,7 +26,7 @@ type panel struct {
 // This API will block if no devices found
 func DiscoverNewAiSEGManager() *AiSEGManager {
 	device := ssdp.Discover()
-	log.D("Found device %s at %s", device.Name, device.Hostname)
+	log.D("Found device %s (%s) at %s", device.Name, device.Model, device.Hostname)
 
 	user := os.Getenv("AISEG_USER")
 	if user == "" {
@@ -35,6 +37,8 @@ func DiscoverNewAiSEGManager() *AiSEGManager {
 		log.F("AISEG_PASSWORD is not set")
 	}
 	mgr := newManager(device.Hostname, user, password)
+	mgr.Name = device.Name
+	mgr.Model = device.Model
 	mgr.Devices = mgr.findDevices(DeviceTypeFloorHeating | DeviceTypeLight)
 	return mgr
 }

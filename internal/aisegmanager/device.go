@@ -45,8 +45,7 @@ func (am *AiSEGManager) TurnDevice(nodeId string, on bool) error {
 func (am *AiSEGManager) TurnAllDevices(deviceType DeviceType, on bool) error {
 	for _, d := range am.Devices {
 		if d.Type == deviceType {
-			err := am.turnDevice(&d, on)
-			if err != nil {
+			if err := am.turnDevice(&d, on); err != nil {
 				return err
 			}
 		}

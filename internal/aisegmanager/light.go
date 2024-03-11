@@ -88,8 +88,6 @@ func (am *AiSEGManager) turnLight(d *Device, on bool) error {
 	if err != nil {
 		return err
 	}
-	resp, err := am.client.PostForm(path, string(data))
-	log.D("Response %s", resp)
 
-	return err
+	return am.client.RequestChange(path, string(data))
 }

@@ -1,6 +1,7 @@
 package httpclient
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -47,7 +48,31 @@ func (hc *HttpClient) Get(path string) (string, error) {
 	return string(body), nil
 }
 
-func (hc *HttpClient) PostForm(path string, data string) (string, error) {
+// {"result":"0","acceptId":"108946","errorInfo":"-"}
+type deviceChangeResponse struct {
+	Result    string `json:"result"`
+	ErrorInfo string `json:"errorInfo"`
+}
+
+func (hc *HttpClient) RequestChange(path string, data string) error {
+	body, err := hc.postForm(path, data)
+	if err != nil {
+		return err
+	}
+	log.D("Response %s", body)
+
+	var resp deviceChangeResponse
+	if err := json.Unmarshal([]byte(body), &resp); err != nil {
+		return err
+	}
+	if resp.Result != "0" {
+		return fmt.Errorf("Request failure %s", resp.ErrorInfo)
+	}
+
+	return nil
+}
+
+func (hc *HttpClient) postForm(path string, data string) (string, error) {
 	url := hc.url(path)
 
 	reqBody := fmt.Sprintf("data=%s", data)
