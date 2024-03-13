@@ -106,8 +106,10 @@ func discoverAccessories() (*aisegmanager.AiSEGManager, *accessory.Bridge, []*ac
 
 func startRefresh(mgr *aisegmanager.AiSEGManager) {
 	go func() {
-		time.Sleep(refreshInterval)
-		log.D("Refreshing tokens")
-		mgr.Refresh()
+		for {
+			time.Sleep(refreshInterval)
+			log.D("Refreshing tokens")
+			mgr.Refresh()
+		}
 	}()
 }
