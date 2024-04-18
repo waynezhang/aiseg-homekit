@@ -13,13 +13,10 @@ import (
 	"github.com/waynezhang/aiseg-homekit/internal/log"
 )
 
-const (
-	refreshInterval = 1 * time.Minute // 15 mins
-)
-
 var HKServeCmd = func() *cobra.Command {
+	var interval int
 	fn := func(cmd *cobra.Command, args []string) {
-		serve()
+		serve(interval)
 	}
 
 	cmd := &cobra.Command{
@@ -27,11 +24,12 @@ var HKServeCmd = func() *cobra.Command {
 		Short: "Start HomeKit server. AISEG_USER and AIUSEG_PASSWORD are required as environment variables. PIN code (00102003 by default) can be configured by AISEG_PIN.",
 		Run:   fn,
 	}
+	cmd.Flags().IntVarP(&interval, "interval", "i", 1, "Refresh interval")
 
 	return cmd
 }()
 
-func serve() {
+func serve(interval int) {
 	mgr, bridge, accessories, setterMap := discoverAccessories()
 	if len(accessories) == 0 {
 		log.E("No accessories found")
@@ -52,7 +50,8 @@ func serve() {
 	}
 	server.Pin = pin
 
-	startRefresh(mgr, setterMap)
+	log.D("Refresh interval %dmin...", interval)
+	startRefresh(mgr, setterMap, interval)
 
 	fmt.Printf("Starting server with PIN code %s...\n", server.Pin)
 	if err = server.ListenAndServe(context.Background()); err != nil {
@@ -114,10 +113,10 @@ func discoverAccessories() (*aisegmanager.AiSEGManager, *accessory.Bridge, []*ac
 	return mgr, bridge, accessories, setterMap
 }
 
-func startRefresh(mgr *aisegmanager.AiSEGManager, setterMap map[string]valueSetter) {
+func startRefresh(mgr *aisegmanager.AiSEGManager, setterMap map[string]valueSetter, interval int) {
 	go func() {
 		for {
-			time.Sleep(refreshInterval)
+			time.Sleep(time.Duration(interval) * time.Minute)
 			log.D("Refreshing tokens")
 			mgr.Refresh()
 
