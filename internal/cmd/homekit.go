@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	refreshInterval = 15 * time.Minute // 15 mins
+	refreshInterval = 1 * time.Minute // 15 mins
 )
 
 var HKServeCmd = func() *cobra.Command {
@@ -32,7 +32,7 @@ var HKServeCmd = func() *cobra.Command {
 }()
 
 func serve() {
-	mgr, bridge, accessories := discoverAccessories()
+	mgr, bridge, accessories, setterMap := discoverAccessories()
 	if len(accessories) == 0 {
 		log.E("No accessories found")
 		os.Exit(1)
@@ -52,7 +52,7 @@ func serve() {
 	}
 	server.Pin = pin
 
-	startRefresh(mgr)
+	startRefresh(mgr, setterMap)
 
 	fmt.Printf("Starting server with PIN code %s...\n", server.Pin)
 	if err = server.ListenAndServe(context.Background()); err != nil {
@@ -60,10 +60,13 @@ func serve() {
 	}
 }
 
-func discoverAccessories() (*aisegmanager.AiSEGManager, *accessory.Bridge, []*accessory.A) {
+type valueSetter func(bool)
+
+func discoverAccessories() (*aisegmanager.AiSEGManager, *accessory.Bridge, []*accessory.A, map[string]valueSetter) {
 	log.D("Discovering devices")
 
 	accessories := []*accessory.A{}
+	setterMap := map[string]valueSetter{}
 	mgr := aisegmanager.DiscoverNewAiSEGManager()
 	for idx, d := range mgr.Devices {
 		switch d.Type {
@@ -76,7 +79,11 @@ func discoverAccessories() (*aisegmanager.AiSEGManager, *accessory.Bridge, []*ac
 			})
 			a.Id = uint64(10000 + idx)
 			a.Lightbulb.On.SetValue(d.IsOn)
+
 			accessories = append(accessories, a.A)
+			setterMap[d.NodeId] = func(on bool) {
+				a.Lightbulb.On.SetValue(on)
+			}
 		case aisegmanager.DeviceTypeFloorHeating:
 			a := accessory.NewFan(accessory.Info{
 				Name: d.Name,
@@ -87,6 +94,9 @@ func discoverAccessories() (*aisegmanager.AiSEGManager, *accessory.Bridge, []*ac
 			a.Id = uint64(10000 + idx)
 			a.Fan.On.SetValue(d.IsOn)
 			accessories = append(accessories, a.A)
+			setterMap[d.NodeId] = func(on bool) {
+				a.Fan.On.SetValue(on)
+			}
 		}
 	}
 
@@ -101,15 +111,22 @@ func discoverAccessories() (*aisegmanager.AiSEGManager, *accessory.Bridge, []*ac
 	})
 	bridge.Id = 1
 
-	return mgr, bridge, accessories
+	return mgr, bridge, accessories, setterMap
 }
 
-func startRefresh(mgr *aisegmanager.AiSEGManager) {
+func startRefresh(mgr *aisegmanager.AiSEGManager, setterMap map[string]valueSetter) {
 	go func() {
 		for {
 			time.Sleep(refreshInterval)
 			log.D("Refreshing tokens")
 			mgr.Refresh()
+
+			for _, d := range mgr.Devices {
+				setter := setterMap[d.NodeId]
+				if setter != nil {
+					setter(d.IsOn)
+				}
+			}
 		}
 	}()
 }
