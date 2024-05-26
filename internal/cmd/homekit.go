@@ -15,8 +15,9 @@ import (
 
 var HKServeCmd = func() *cobra.Command {
 	var interval int
+	var dbPath string
 	fn := func(cmd *cobra.Command, args []string) {
-		serve(interval)
+		serve(interval, dbPath)
 	}
 
 	cmd := &cobra.Command{
@@ -25,11 +26,12 @@ var HKServeCmd = func() *cobra.Command {
 		Run:   fn,
 	}
 	cmd.Flags().IntVarP(&interval, "interval", "i", 1, "Refresh interval")
+	cmd.Flags().StringVarP(&dbPath, "db", "d", "./db", "Database path")
 
 	return cmd
 }()
 
-func serve(interval int) {
+func serve(interval int, dbPath string) {
 	mgr, bridge, accessories, setterMap := discoverAccessories()
 	if len(accessories) == 0 {
 		log.E("No accessories found")
@@ -37,7 +39,7 @@ func serve(interval int) {
 	}
 	log.D("Found %d accessories", len(accessories))
 
-	store := hap.NewFsStore("./db")
+	store := hap.NewFsStore(dbPath)
 
 	server, err := hap.NewServer(store, bridge.A, accessories...)
 	if err != nil {
@@ -50,6 +52,7 @@ func serve(interval int) {
 	}
 	server.Pin = pin
 
+	log.D("Database path %s", dbPath)
 	log.D("Refresh interval %dmin...", interval)
 	startRefresh(mgr, setterMap, interval)
 
