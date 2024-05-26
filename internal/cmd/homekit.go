@@ -55,6 +55,12 @@ func serve(interval int, dbPath string) {
 		server.Ifaces = []string{iface}
 	}
 
+	addr := os.Getenv("AISEG_BINDADDR")
+	if addr != "" {
+		log.D("Binding to addr %s", addr)
+		server.Addr = addr
+	}
+
 	pin := os.Getenv("AISEG_PIN")
 	if pin == "" {
 		pin = "00102003"
