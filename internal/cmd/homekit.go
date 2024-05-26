@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
@@ -56,10 +57,19 @@ func serve(interval int, dbPath string) {
 	log.D("Refresh interval %dmin...", interval)
 	startRefresh(mgr, setterMap, interval)
 
+	log.D("Starting health check handler")
+	startHealthCheckHandler(server)
+
 	fmt.Printf("Starting server with PIN code %s...\n", server.Pin)
 	if err = server.ListenAndServe(context.Background()); err != nil {
 		log.F("Failed to start server due to %s", err.Error())
 	}
+}
+
+func startHealthCheckHandler(server *hap.Server) {
+	server.ServeMux().HandleFunc("/health", func(res http.ResponseWriter, req *http.Request) {
+		res.Write([]byte("OK"))
+	})
 }
 
 type valueSetter func(bool)
