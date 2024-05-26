@@ -18,6 +18,12 @@ The PIN code for HomeKit is `20030010` by default. It can be changed like below:
 ```
 export AISEG_PIN=xxxxxxxx
 ```
+
+### Other environment
+
+- `AISEG_BINDADDR`: Address and port to bind (e.g, `:99999`)
+- `AISEG_IFACE`: Interface to bind (e.g, `eth0`)
+
 ## Disclaimer
 
 **Use it at your own risk**
