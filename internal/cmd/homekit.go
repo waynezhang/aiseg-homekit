@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/brutella/hap"
@@ -63,8 +65,9 @@ func serve(interval int, dbPath string) {
 	log.D("Refresh interval %dmin...", interval)
 	startRefresh(mgr, setterMap, interval)
 
-	log.D("Starting health check handler")
+	log.D("Starting httph andler")
 	startHealthCheckHandler(server)
+	startHandler(server, mgr)
 
 	fmt.Printf("Starting server with PIN code %s...\n", server.Pin)
 	if err = server.ListenAndServe(context.Background()); err != nil {
@@ -75,6 +78,43 @@ func serve(interval int, dbPath string) {
 func startHealthCheckHandler(server *hap.Server) {
 	server.ServeMux().HandleFunc("/health", func(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte("OK"))
+	})
+}
+
+func startHandler(server *hap.Server, mgr *aisegmanager.AiSEGManager) {
+	server.ServeMux().HandleFunc("/s/all", func(res http.ResponseWriter, req *http.Request) {
+		info := []map[string]string{}
+		for _, d := range mgr.Devices {
+			info = append(info, map[string]string{
+				"nodeId": d.NodeId,
+				"name":   d.Name,
+			})
+		}
+		body, _ := json.Marshal(info)
+		res.Write([]byte(body))
+	})
+	server.ServeMux().HandleFunc("/s/{nodeId}/{status}", func(res http.ResponseWriter, req *http.Request) {
+		if req.Method != http.MethodPost {
+			res.WriteHeader(http.StatusBadRequest)
+			res.Write([]byte("400 Bad Rqeust"))
+			return
+		}
+
+		path := strings.Split(req.URL.Path, "/")
+		nodeId := path[2]
+		status := path[3]
+		switch status {
+		case "on":
+			mgr.TurnDevice(nodeId, true)
+			res.Write([]byte("OK"))
+		case "off":
+			mgr.TurnDevice(nodeId, false)
+			res.Write([]byte("OK"))
+		default:
+			res.WriteHeader(http.StatusBadRequest)
+			res.Write([]byte("400 Bad Rqeust"))
+			return
+		}
 	})
 }
 
