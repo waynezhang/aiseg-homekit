@@ -47,6 +47,12 @@ func serve(interval int, dbPath string) {
 		log.F("Failed to create server due to %s", err.Error())
 	}
 
+	iface := os.Getenv("AISEG_IFACE")
+	if iface != "" {
+		log.D("Binding to iface %s", iface)
+		server.Ifaces = []string{iface}
+	}
+
 	pin := os.Getenv("AISEG_PIN")
 	if pin == "" {
 		pin = "00102003"
