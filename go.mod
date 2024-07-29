@@ -8,7 +8,7 @@ require (
 	github.com/huin/goupnp v1.3.0
 	github.com/icholy/digest v0.1.23
 	github.com/rs/zerolog v1.32.0
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 )
 
 require (
