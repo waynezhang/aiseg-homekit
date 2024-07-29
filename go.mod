@@ -4,7 +4,7 @@ go 1.22.1
 
 require (
 	github.com/PuerkitoBio/goquery v1.9.1
-	github.com/brutella/hap v0.0.31
+	github.com/brutella/hap v0.0.34
 	github.com/huin/goupnp v1.3.0
 	github.com/icholy/digest v0.1.23
 	github.com/rs/zerolog v1.32.0
@@ -13,7 +13,7 @@ require (
 
 require (
 	github.com/andybalholm/cascadia v1.3.2 // indirect
-	github.com/brutella/dnssd v1.2.10 // indirect
+	github.com/brutella/dnssd v1.2.11 // indirect
 	github.com/go-chi/chi v1.5.4 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

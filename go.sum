@@ -2,10 +2,10 @@ github.com/PuerkitoBio/goquery v1.9.1 h1:mTL6XjbJTZdpfL+Gwl5U2h1l9yEkJjhmlTeV9VP
 github.com/PuerkitoBio/goquery v1.9.1/go.mod h1:cW1n6TmIMDoORQU5IU/P1T3tGFunOeXEpGP2WHRwkbY=
 github.com/andybalholm/cascadia v1.3.2 h1:3Xi6Dw5lHF15JtdcmAHD3i1+T8plmv7BQ/nsViSLyss=
 github.com/andybalholm/cascadia v1.3.2/go.mod h1:7gtRlve5FxPPgIgX36uWBX58OdBsSS6lUvCFb+h7KvU=
-github.com/brutella/dnssd v1.2.10 h1:Gg0k7+NtJp7TbOMS0eUVg0VEjSdftzKOTQ8QQTzQ0x4=
-github.com/brutella/dnssd v1.2.10/go.mod h1:yZ+GHHbGhtp5yJeKTnppdFGiy6OhiPoxs0WHW1KUcFA=
-github.com/brutella/hap v0.0.31 h1:2UDKVecPbpXYUwCWqIKB3fjF9z7mykX4g0jwU+ID/eo=
-github.com/brutella/hap v0.0.31/go.mod h1:SZfaxv/VE3Ash7T55criv5KuLP4qpbCq7RWueEBifPs=
+github.com/brutella/dnssd v1.2.11 h1:kOAT2DY2KKEONJlB4wkmB+16FEpDWGV+HEIocuMnDD4=
+github.com/brutella/dnssd v1.2.11/go.mod h1:yZ+GHHbGhtp5yJeKTnppdFGiy6OhiPoxs0WHW1KUcFA=
+github.com/brutella/hap v0.0.34 h1:wey54SKFp7TyU+OeiV0T5qGAFpBoskzHjIDt2Y3fWWw=
+github.com/brutella/hap v0.0.34/go.mod h1:IqF/d5Iqt/QWb+JX/fC6tvi44IqW6sbwuQf3SWtdgFw=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/cpuguy83/go-md2man/v2 v2.0.4/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
