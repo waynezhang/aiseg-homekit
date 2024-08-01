@@ -91,9 +91,14 @@ func startHandler(server *hap.Server, mgr *aisegmanager.AiSEGManager) {
 	server.ServeMux().HandleFunc("/s/all", func(res http.ResponseWriter, req *http.Request) {
 		info := []map[string]string{}
 		for _, d := range mgr.Devices {
+			status := "off"
+			if d.IsOn {
+				status = "on"
+			}
 			info = append(info, map[string]string{
 				"nodeId": d.NodeId,
 				"name":   d.Name,
+				"status": status,
 			})
 		}
 		body, _ := json.Marshal(info)
