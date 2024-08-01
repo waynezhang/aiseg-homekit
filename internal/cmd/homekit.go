@@ -88,20 +88,47 @@ func startHealthCheckHandler(server *hap.Server) {
 }
 
 func startHandler(server *hap.Server, mgr *aisegmanager.AiSEGManager) {
+	device2map := func(d *aisegmanager.Device) map[string]string {
+		status := "off"
+		if d.IsOn {
+			status = "on"
+		}
+		return map[string]string{
+			"nodeId": d.NodeId,
+			"name":   d.Name,
+			"status": status,
+		}
+	}
 	server.ServeMux().HandleFunc("/s/all", func(res http.ResponseWriter, req *http.Request) {
 		info := []map[string]string{}
 		for _, d := range mgr.Devices {
-			status := "off"
-			if d.IsOn {
-				status = "on"
-			}
-			info = append(info, map[string]string{
-				"nodeId": d.NodeId,
-				"name":   d.Name,
-				"status": status,
-			})
+			info = append(info, device2map(&d))
 		}
 		body, _ := json.Marshal(info)
+		res.Write([]byte(body))
+	})
+	server.ServeMux().HandleFunc("/s/{nodeId}/status", func(res http.ResponseWriter, req *http.Request) {
+		path := strings.Split(req.URL.Path, "/")
+		nodeId := path[2]
+
+		var device *aisegmanager.Device
+		for _, d := range mgr.Devices {
+			if d.NodeId == nodeId {
+				device = &d
+				break
+			}
+		}
+
+		if device == nil {
+			res.WriteHeader(http.StatusBadRequest)
+			res.Write([]byte("400 Bad Rqeust"))
+			return
+		}
+
+		body := "off"
+		if device.IsOn {
+			body = "on"
+		}
 		res.Write([]byte(body))
 	})
 	server.ServeMux().HandleFunc("/s/{nodeId}/{status}", func(res http.ResponseWriter, req *http.Request) {
