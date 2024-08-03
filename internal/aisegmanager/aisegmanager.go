@@ -14,7 +14,7 @@ import (
 type AiSEGManager struct {
 	Name    string
 	Model   string
-	Devices []Device
+	Devices []*Device
 
 	client *httpclient.HttpClient
 	mutext sync.Mutex
@@ -55,7 +55,7 @@ func newManager(hostname string, name string, model string, username string, pas
 	return &AiSEGManager{
 		Name:    name,
 		Model:   model,
-		Devices: []Device{},
+		Devices: []*Device{},
 		client:  httpclient.Client(hostname, username, password),
 		mutext:  sync.Mutex{},
 	}
@@ -113,12 +113,12 @@ func (am *AiSEGManager) getPanelLinks(deviceLink string) []panel {
 	return panels
 }
 
-func (am *AiSEGManager) parseDevices(panel panel) []Device {
+func (am *AiSEGManager) parseDevices(panel panel) []*Device {
 	if panel.deviceType == DeviceTypeLight {
 		return am.parseLights(panel)
 	}
 	if panel.deviceType == DeviceTypeFloorHeating {
 		return am.parseFloorHeating(panel)
 	}
-	return []Device{}
+	return []*Device{}
 }

@@ -10,11 +10,11 @@ import (
 	"github.com/waynezhang/aiseg-homekit/internal/log"
 )
 
-func (am *AiSEGManager) parseLights(panel panel) []Device {
-	return am.parseLightsPage([]Device{}, panel, 1, true)
+func (am *AiSEGManager) parseLights(panel panel) []*Device {
+	return am.parseLightsPage([]*Device{}, panel, 1, true)
 }
 
-func (am *AiSEGManager) parseLightsPage(last []Device, panel panel, page int, hasNext bool) []Device {
+func (am *AiSEGManager) parseLightsPage(last []*Device, panel panel, page int, hasNext bool) []*Device {
 	if !hasNext {
 		return last
 	}
@@ -38,7 +38,7 @@ func (am *AiSEGManager) parseLightsPage(last []Device, panel panel, page int, ha
 		title := s.Find(".lighting_title").Text()
 		stateNode := s.Find(".lighting_state")
 		isOn := stateNode.HasClass("on")
-		last = append(last, Device{
+		last = append(last, &Device{
 			NodeId:   nodeId,
 			Name:     title,
 			IsOn:     isOn,
@@ -57,7 +57,7 @@ func (am *AiSEGManager) parseLightsPage(last []Device, panel panel, page int, ha
 
 func (am *AiSEGManager) turnLight(d *Device, on bool) error {
 	// http://hostname/action/devices/device/xxx/change
-	log.D("Toggling %s at %s", d.NodeId, d.link)
+	log.D("Toggling %s at %s (%p)", d.NodeId, d.link, d)
 
 	path := fmt.Sprintf("/action/devices/device/%s/change", d.link)
 	// From AiSEG
@@ -89,5 +89,11 @@ func (am *AiSEGManager) turnLight(d *Device, on bool) error {
 		return err
 	}
 
-	return am.client.RequestChange(path, string(data))
+	err = am.client.RequestChange(path, string(data))
+	if err != nil {
+		return err
+	}
+
+	d.IsOn = on
+	return nil
 }

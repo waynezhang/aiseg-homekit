@@ -10,17 +10,17 @@ import (
 	"github.com/waynezhang/aiseg-homekit/internal/log"
 )
 
-func (am *AiSEGManager) parseFloorHeating(panel panel) []Device {
+func (am *AiSEGManager) parseFloorHeating(panel panel) []*Device {
 	path := fmt.Sprintf("/page/devices/device/%s", panel.link)
 	doc, err := am.client.Document(path)
 	if err != nil {
 		log.E("Failed to parse floor heating link %s due to %s", path, err.Error())
-		return []Device{}
+		return []*Device{}
 	}
 
 	link := strings.Split(panel.link, "?")[0]
 
-	devices := []Device{}
+	devices := []*Device{}
 	doc.Find(".main .panel").Each(func(_ int, s *goquery.Selection) {
 		nodeId := s.AttrOr("nodeid", "#")
 		eoj := s.AttrOr("eoj", "#")
@@ -29,7 +29,7 @@ func (am *AiSEGManager) parseFloorHeating(panel panel) []Device {
 		stateNode := s.Find(".kiki_state").Children().First()
 		token := s.Find(".kiki_button .control").AttrOr("token", "")
 		isOn := stateNode.HasClass("on")
-		devices = append(devices, Device{
+		devices = append(devices, &Device{
 			NodeId:   nodeId,
 			Name:     title,
 			IsOn:     isOn,
@@ -45,7 +45,7 @@ func (am *AiSEGManager) parseFloorHeating(panel panel) []Device {
 
 func (am *AiSEGManager) turnFloorHeating(d *Device, on bool) error {
 	// http://hostname/action/devices/device/xxx/change
-	log.D("Toggling %s at %s", d.NodeId, d.link)
+	log.D("Toggling %s at %s (%p)", d.NodeId, d.link, d)
 
 	path := fmt.Sprintf("/action/devices/device/%s/change", d.link)
 	// From AiSEG
@@ -77,5 +77,11 @@ func (am *AiSEGManager) turnFloorHeating(d *Device, on bool) error {
 		return err
 	}
 
-	return am.client.RequestChange(path, string(data))
+	err = am.client.RequestChange(path, string(data))
+	if err != nil {
+		return err
+	}
+
+	d.IsOn = on
+	return nil
 }

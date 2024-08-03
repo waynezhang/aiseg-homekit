@@ -54,7 +54,7 @@ func (am *AiSEGManager) TurnAllDevices(deviceType DeviceType, on bool) error {
 
 	for _, d := range am.Devices {
 		if d.Type == deviceType {
-			if err := am.turnDevice(&d, on); err != nil {
+			if err := am.turnDevice(d, on); err != nil {
 				return err
 			}
 		}
@@ -65,7 +65,7 @@ func (am *AiSEGManager) TurnAllDevices(deviceType DeviceType, on bool) error {
 func (am *AiSEGManager) findDevice(nodeId string) *Device {
 	for _, d := range am.Devices {
 		if d.NodeId == nodeId {
-			return &d
+			return d
 		}
 	}
 
@@ -81,14 +81,14 @@ func (am *AiSEGManager) turnDevice(d *Device, on bool) error {
 	return fmt.Errorf("Unsupported device %d", d.Type)
 }
 
-func (am *AiSEGManager) findDevices(deviceType DeviceType) []Device {
+func (am *AiSEGManager) findDevices(deviceType DeviceType) []*Device {
 	deviceLink := am.getDevicePageLink()
 	if deviceLink == nil {
 		log.E("Failed to find device page link")
-		return []Device{}
+		return []*Device{}
 	}
 
-	devices := []Device{}
+	devices := []*Device{}
 	panels := am.getPanelLinks(*deviceLink)
 	for _, panel := range panels {
 		if panel.deviceType&deviceType != 0 {

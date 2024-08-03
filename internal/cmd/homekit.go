@@ -102,7 +102,7 @@ func startHandler(server *hap.Server, mgr *aisegmanager.AiSEGManager) {
 	server.ServeMux().HandleFunc("/s/all", func(res http.ResponseWriter, req *http.Request) {
 		info := []map[string]string{}
 		for _, d := range mgr.Devices {
-			info = append(info, device2map(&d))
+			info = append(info, device2map(d))
 		}
 		body, _ := json.Marshal(info)
 		res.Write([]byte(body))
@@ -114,7 +114,7 @@ func startHandler(server *hap.Server, mgr *aisegmanager.AiSEGManager) {
 		var device *aisegmanager.Device
 		for _, d := range mgr.Devices {
 			if d.NodeId == nodeId {
-				device = &d
+				device = d
 				break
 			}
 		}
