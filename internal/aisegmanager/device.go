@@ -28,24 +28,38 @@ func (am *AiSEGManager) ToggleDevice(nodeId string) error {
 	am.mutext.Lock()
 	defer am.mutext.Unlock()
 
-	d := am.findDevice(nodeId)
-	if d == nil {
+	ds := am.findDevice(nodeId)
+	if len(ds) == 0 {
 		return fmt.Errorf("Device %s not found", nodeId)
 	}
-	log.D("Toggling device %s", nodeId)
-	return am.turnDevice(d, !d.IsOn)
+	for _, d := range ds {
+		log.D("Toggling device %s", nodeId)
+		err := am.turnDevice(d, !d.IsOn)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (am *AiSEGManager) TurnDevice(nodeId string, on bool) error {
 	am.mutext.Lock()
 	defer am.mutext.Unlock()
 
-	d := am.findDevice(nodeId)
-	if d == nil {
+	ds := am.findDevice(nodeId)
+	if len(ds) == 0 {
 		return fmt.Errorf("Device %s not found", nodeId)
 	}
-	log.D("Turn device %s %t", nodeId, on)
-	return am.turnDevice(d, on)
+
+	for _, d := range ds {
+
+		log.D("Turn device %s %t", nodeId, on)
+		err := am.turnDevice(d, on)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (am *AiSEGManager) TurnAllDevices(deviceType DeviceType, on bool) error {
@@ -62,14 +76,15 @@ func (am *AiSEGManager) TurnAllDevices(deviceType DeviceType, on bool) error {
 	return nil
 }
 
-func (am *AiSEGManager) findDevice(nodeId string) *Device {
+func (am *AiSEGManager) findDevice(nodeId string) []*Device {
+	ds := []*Device{}
 	for _, d := range am.Devices {
 		if d.NodeId == nodeId {
-			return d
+			ds = append(ds, d)
 		}
 	}
 
-	return nil
+	return ds
 }
 
 func (am *AiSEGManager) turnDevice(d *Device, on bool) error {
