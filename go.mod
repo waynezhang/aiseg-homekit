@@ -7,7 +7,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.10.0
 	github.com/brutella/hap v0.0.35
 	github.com/huin/goupnp v1.3.0
-	github.com/icholy/digest v0.1.23
+	github.com/icholy/digest v1.0.0
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/cobra v1.8.1
 )
