@@ -4,7 +4,7 @@ go 1.22.1
 toolchain go1.23.1
 
 require (
-	github.com/PuerkitoBio/goquery v1.10.0
+	github.com/PuerkitoBio/goquery v1.10.1
 	github.com/brutella/hap v0.0.35
 	github.com/huin/goupnp v1.3.0
 	github.com/icholy/digest v1.0.1
@@ -13,7 +13,7 @@ require (
 )
 
 require (
-	github.com/andybalholm/cascadia v1.3.2 // indirect
+	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/brutella/dnssd v1.2.14 // indirect
 	github.com/go-chi/chi v1.5.4 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
@@ -27,7 +27,7 @@ require (
 	github.com/xiam/to v0.0.0-20200126224905-d60d31e03561 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/mod v0.18.0 // indirect
-	golang.org/x/net v0.29.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
