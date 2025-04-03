@@ -1,9 +1,14 @@
-FROM golang:latest
+# Build
+FROM golang:latest as build
 
-WORKDIR /app
+WORKDIR /go/src/app
 
 COPY . .
+RUN CGO_ENABLED=0 make build
 
-RUN make build
+# Run
+FROM gcr.io/distroless/static
 
-ENTRYPOINT ["/app/bin/aiseg", "serve", "-v", "-d", "/db"]
+COPY --from=build /go/src/app/bin/aiseg /aiseg
+
+ENTRYPOINT ["/aiseg", "serve", "-v", "-d", "/db"]
