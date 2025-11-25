@@ -3,7 +3,7 @@ module github.com/waynezhang/aiseg-homekit
 go 1.24.2
 
 require (
-	github.com/PuerkitoBio/goquery v1.10.3
+	github.com/PuerkitoBio/goquery v1.11.0
 	github.com/brutella/hap v0.0.35
 	github.com/huin/goupnp v1.3.0
 	github.com/icholy/digest v1.1.0
