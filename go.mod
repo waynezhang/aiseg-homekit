@@ -7,7 +7,7 @@ require (
 	github.com/brutella/hap v0.0.35
 	github.com/huin/goupnp v1.3.0
 	github.com/icholy/digest v1.1.0
-	github.com/rs/zerolog v1.34.0
+	github.com/rs/zerolog v1.35.1
 	github.com/spf13/cobra v1.10.2
 )
 
