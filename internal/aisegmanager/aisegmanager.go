@@ -62,14 +62,15 @@ func newManager(hostname string, name string, model string, username string, pas
 }
 
 func (am *AiSEGManager) getDevicePageLink() *string {
-	doc, err := am.client.Document("/")
+	// "/" may redirect to a splash page (e.g. anniversary notice) without the menu
+	doc, err := am.client.Document("/top")
 	if err != nil {
 		log.E("Failed to parse index page due to %s", err.Error())
 		return nil
 	}
 
 	linkNode := doc.Find("#fmenu a[href^=\"/page/devices\"]").First()
-	if linkNode == nil {
+	if linkNode.Length() == 0 {
 		return nil
 	}
 
